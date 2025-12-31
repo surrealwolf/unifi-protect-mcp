@@ -1,18 +1,17 @@
-# UniFi MCP Server - Complete API Reference
+# UniFi Protect MCP Server - Complete API Reference
 
-Complete documentation for all 21 tools currently implemented in the UniFi MCP Server, with reference to additional endpoints available in the official API specifications.
+Complete documentation for all surveillance and device management tools implemented in the UniFi Protect MCP Server, with reference to additional endpoints available in the official API specifications.
 
 ## Quick Navigation
 
 **By Category:**
-- [Protect API Tools](#protect-api-tools) - 3 tools for surveillance systems
-- [Network API Tools](#network-api-tools) - 18 tools for network management
+- [Protect API Tools](#protect-api-tools) - Surveillance system management
+- [Device & System Management](#device--system-management) - Camera, sensor, and system monitoring
 
 **By Use Case:**
-- [Network Monitoring](#sites--devices) - Check status and health
-- [WiFi Management](#wifi--clients) - Monitor networks and clients
-- [Security Management](#security--management) - Firewall and access control
-- [System Utilities](#utilities) - General information
+- [Surveillance Monitoring](#protect-api-tools) - Check camera status and events
+- [System Health](#protect-api-tools) - Monitor system health and storage
+- [Device Management](#device--system-management) - Manage cameras and sensors
 
 **For More Information:**
 - [Official API Specifications](#official-api-specifications)
@@ -23,14 +22,14 @@ Complete documentation for all 21 tools currently implemented in the UniFi MCP S
 
 ## Protect API Tools
 
-The Protect API provides access to surveillance systems, cameras, sensors, and related devices.
+The Protect API provides access to surveillance systems, cameras, sensors, lights, and related devices for comprehensive monitoring and management.
 
 **Official Specification**: Available from your UniFi controller:
 ```
 https://<your-protect-url>/proxy/protect/api-docs/integration.json
 ```
 
-**Currently Implemented Tools**: 3 of 24+ available endpoints
+**Currently Implemented Tools**: 3+ endpoints for surveillance management
 
 ### get_protect_devices
 
@@ -154,18 +153,7 @@ Get system information about the UniFi Protect installation.
 
 ---
 
-## Network API Tools
-
-The Network API provides access to UniFi Network controller functionality for site, device, WiFi, and client management.
-
-**Official Specification**: Available from your UniFi controller:
-```
-https://<your-protect-url>/proxy/network/integration/v1/...
-```
-
-**Currently Implemented Tools**: 18 endpoints
-
-### Sites & Devices
+## Device & System Management
 
 #### get_network_sites
 
@@ -974,7 +962,7 @@ All tools return errors in standard format:
 
 ## Additional Resources
 
-- **API Specifications**: `docs/protect_integration.json`, `docs/network_integration.json`
+- **API Specifications**: `docs/protect_integration.json`
 - **Setup Guide**: See SETUP.md
 - **Usage Examples**: See EXAMPLES.md
 - **Best Practices**: See BEST_PRACTICES.md
@@ -983,5 +971,5 @@ All tools return errors in standard format:
 ---
 
 **Last Updated**: December 30, 2025  
-**Current Tools**: 26 implemented (all functional)  
-**Available Endpoints**: 56+ (Protect: 24+, Network: 32+)
+**Current Tools**: Protect surveillance management  
+**Available Endpoints**: 24+ surveillance endpoints
