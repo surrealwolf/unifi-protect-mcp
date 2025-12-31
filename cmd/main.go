@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/joho/godotenv"
@@ -58,17 +59,36 @@ func main() {
 	// Initialize MCP server
 	server := mcp.NewServer(protectClient)
 
-	logrus.Info("Starting Unifi Protect MCP Server on stdio transport")
+	// Determine transport mode
+	transport := strings.ToLower(os.Getenv("MCP_TRANSPORT"))
+	if transport == "" {
+		transport = "stdio"
+	}
 
-	go func() {
-		if err := server.ServeStdio(ctx); err != nil {
-			logrus.WithError(err).Fatal("Server error")
+	switch transport {
+	case "http":
+		httpAddr := os.Getenv("MCP_HTTP_ADDR")
+		if httpAddr == "" {
+			httpAddr = ":8000"
 		}
-	}()
+		logrus.Infof("Starting UniFi Protect MCP Server on HTTP at %s", httpAddr)
+		go func() {
+			if err := server.ServeHTTP(httpAddr, ctx); err != nil {
+				logrus.WithError(err).Fatal("HTTP Server error")
+			}
+		}()
+	default:
+		logrus.Info("Starting UniFi Protect MCP Server on stdio transport")
+		go func() {
+			if err := server.ServeStdio(ctx); err != nil {
+				logrus.WithError(err).Fatal("Server error")
+			}
+		}()
+	}
 
 	// Wait for shutdown signal
 	<-sigChan
 	fmt.Println("\nShutting down gracefully...")
 	cancel()
-	logrus.Info("Unifi Protect MCP Server stopped")
+	logrus.Info("UniFi Protect MCP Server stopped")
 }
