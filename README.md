@@ -6,7 +6,7 @@ Model Context Protocol (MCP) server for Ubiquiti UniFi Protect management. Monit
 
 ## Features
 
-- **23 management tools** for complete Protect operations
+- **14 management tools** for complete Protect operations
 - **Camera Management**: Monitor and control UniFi cameras with PTZ and RTSPS support
 - **Motion & Environment Sensors**: Real-time sensor data and detailed queries
 - **Smart Lighting**: Control UniFi smart lights
@@ -67,10 +67,14 @@ The server listens on stdio and is ready for MCP protocol messages.
 ### Events & Activity (1 tool)
 - `get_protect_events` - Query security events with pagination
 
-**Tool Usage Example:**
-```
-get_protect_events(limit=100, offset=0)
-```
+### Camera Controls (2 tools)
+- `camera_create_rtsps_stream` - Create RTSPS video stream
+- `camera_create_talkback_session` - Start two-way audio session
+
+### PTZ Camera Control (Optional)
+- `ptz_move_to_preset` - Move PTZ camera to saved preset
+- `ptz_start_patrol` - Start automatic patrol sequence
+- `ptz_stop_patrol` - Stop patrol sequence
 
 ## Environment Variables
 
@@ -97,6 +101,57 @@ Then request Protect management tasks:
 - "Get recent security events from the last hour"
 - "What motion sensors are currently active?"
 - "List all configured live views"
+
+For detailed AI assistant guidance, see [.github/copilot-instructions.md](.github/copilot-instructions.md).
+
+## Docker Support
+
+### Build Docker Image
+
+```bash
+docker build -t unifi-protect-mcp:latest .
+```
+
+### Run with Docker
+
+```bash
+docker run -e UNIFI_API_KEY=your-key -e UNIFI_BASE_URL=https://your-url unifi-protect-mcp:latest
+```
+
+### Docker Compose
+
+```bash
+# Create .env file with your configuration
+cp .env.example .env
+# Edit .env with your UniFi credentials
+
+# Start the service
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+```
+
+## GitHub Actions & CI/CD
+
+This project includes automated workflows:
+
+- **Tests**: Runs on every push and pull request
+- **Docker Build**: Validates Dockerfile builds
+- **Release**: Creates multi-platform binaries (Linux, macOS, Windows)
+- **Auto-assign**: Assigns PRs to authors
+
+See [.github/workflows](.github/workflows) for details.
+
+## Skills & Capabilities
+
+This MCP implements the following domain-specific skills:
+
+- **Surveillance Monitoring**: Camera status, event review, coverage verification
+- **Device Management**: Camera and sensor inventory, device monitoring
+- **Security Management**: Access controls, system security configuration
+
+See [.github/skills](.github/skills) for detailed skill documentation.
 
 ## Project Structure
 
