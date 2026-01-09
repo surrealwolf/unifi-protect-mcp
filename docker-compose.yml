@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   unifi-protect-mcp:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: harbor.dataknife.net/library/unifi-protect-mcp:latest
     container_name: unifi-protect-mcp
     environment:
       - UNIFI_API_KEY=${UNIFI_API_KEY}

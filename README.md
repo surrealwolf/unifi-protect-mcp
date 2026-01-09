@@ -130,26 +130,67 @@ For detailed AI assistant guidance, see [.github/copilot-instructions.md](.githu
 
 ## Docker Support
 
-### Build Docker Image
+This project uses Harbor registry (`harbor.dataknife.net`) for container images.
+
+### Pull from Harbor (Recommended)
 
 ```bash
+# Login to Harbor
+docker login harbor.dataknife.net \
+  -u 'robot$library+ci-builder' \
+  -p 'your-harbor-password'
+
+# Pull the image
+docker pull harbor.dataknife.net/library/unifi-protect-mcp:latest
+
+# Run the container
+docker run -e UNIFI_API_KEY=your-key \
+           -e UNIFI_BASE_URL=https://your-url \
+           harbor.dataknife.net/library/unifi-protect-mcp:latest
+```
+
+### Build Docker Image Locally
+
+```bash
+# Build using Makefile (includes Harbor configuration)
+make docker-build
+
+# Or build directly
 docker build -t unifi-protect-mcp:latest .
 ```
 
-### Run with Docker
+### Build and Push to Harbor
 
 ```bash
-docker run -e UNIFI_API_KEY=your-key -e UNIFI_BASE_URL=https://your-url unifi-protect-mcp:latest
+# Set Harbor credentials as environment variables
+export HARBOR_USERNAME='robot$library+ci-builder'
+export HARBOR_PASSWORD='your-harbor-password'
+
+# Build and push using Makefile
+make docker-push
+
+# Or manually:
+docker login harbor.dataknife.net -u "$HARBOR_USERNAME" -p "$HARBOR_PASSWORD"
+docker build -t harbor.dataknife.net/library/unifi-protect-mcp:latest .
+docker push harbor.dataknife.net/library/unifi-protect-mcp:latest
 ```
 
 ### Docker Compose
 
+The `docker-compose.yml` is configured to pull from Harbor:
+
 ```bash
+# Login to Harbor first
+docker login harbor.dataknife.net \
+  -u 'robot$library+ci-builder' \
+  -p 'your-harbor-password'
+
 # Create .env file with your configuration
 cp .env.example .env
 # Edit .env with your UniFi credentials
 
-# Start the service
+# Pull and start the service
+docker-compose pull
 docker-compose up -d
 
 # View logs

@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Build ${{ matrix.goos }}/${{ matrix.goarch }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         goos: [linux, darwin, windows]
@@ -56,10 +56,43 @@ jobs:
           name: unifi-protect-mcp-${{ matrix.goos }}-${{ matrix.goarch }}
           path: dist/unifi-protect-mcp*
 
+  docker:
+    name: Build and Push Docker Image
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Login to Harbor
+        run: |
+          echo "${{ secrets.HARBOR_PASSWORD }}" | docker login harbor.dataknife.net \
+            -u '${{ secrets.HARBOR_USERNAME }}' \
+            --password-stdin
+
+      - name: Pull base images from Harbor cache
+        run: |
+          docker pull harbor.dataknife.net/dockerhub/library/golang:1.23-alpine || true
+          docker pull harbor.dataknife.net/dockerhub/library/alpine:3.18 || true
+
+      - name: Build and push Docker image
+        run: |
+          IMAGE_TAG="harbor.dataknife.net/library/unifi-protect-mcp"
+          VERSION="${{ github.ref_name }}"
+          
+          # Build with cache from Harbor
+          docker build \
+            --cache-from harbor.dataknife.net/library/unifi-protect-mcp:latest \
+            -t ${IMAGE_TAG}:${VERSION} \
+            -t ${IMAGE_TAG}:latest \
+            -f Dockerfile .
+          
+          # Push versioned and latest tags
+          docker push ${IMAGE_TAG}:${VERSION}
+          docker push ${IMAGE_TAG}:latest
+
   release:
     name: Create Release
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     permissions:
       contents: write
     steps:
